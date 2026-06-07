@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Court Case Record Management System</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f1f5f9;
+padding:20px;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+}
+
+.form-section{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.15);
+margin-bottom:20px;
+}
+
+h1{
+text-align:center;
+color:#0f172a;
+margin-bottom:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:15px;
+}
+
+label{
+font-weight:bold;
+display:block;
+margin-bottom:5px;
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:16px;
+margin-top:10px;
+}
+
+.generate{
+background:#16a34a;
+color:white;
+}
+
+.print{
+background:#2563eb;
+color:white;
+margin-left:10px;
+}
+
+.a4-page{
+width:210mm;
+min-height:297mm;
+background:white;
+margin:auto;
+padding:15mm;
+position:relative;
+box-shadow:0 0 15px rgba(0,0,0,.2);
+}
+
+.watermark{
+position:absolute;
+top:45%;
+left:10%;
+font-size:90px;
+font-weight:bold;
+color:rgba(0,0,0,0.05);
+transform:rotate(-30deg);
+z-index:0;
+}
+
+.content{
+position:relative;
+z-index:1;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:3px solid black;
+padding-bottom:10px;
+}
+
+.logo{
+width:100px;
+height:100px;
+border:1px solid #000;
+object-fit:contain;
+}
+
+.passport{
+width:120px;
+height:140px;
+border:1px solid #000;
+object-fit:cover;
+}
+
+.signature{
+width:200px;
+height:80px;
+object-fit:contain;
+border-bottom:1px solid black;
+}
+
+.center{
+text-align:center;
+}
+
+.case-info{
+margin-top:15px;
+line-height:1.8;
+}
+
+.top-details{
+display:flex;
+justify-content:space-between;
+margin-top:20px;
+}
+
+.summary{
+margin-top:20px;
+line-height:1.8;
+text-align:justify;
+}
+
+.qr-bar{
+display:flex;
+justify-content:space-between;
+margin-top:30px;
+align-items:center;
+}
+
+.footer{
+margin-top:40px;
+display:flex;
+justify-content:space-between;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+table td{
+border:1px solid black;
+padding:8px;
+}
+
+@media print{
+
+body{
+background:white;
+padding:0;
+}
+
+.form-section{
+display:none;
+}
+
+.a4-page{
+box-shadow:none;
+margin:0;
+width:100%;
+}
+
+.print{
+display:none;
+}
+}
+</style>
+</head>
+
+<body>
+
+
+<div class="container">
+
+<div class="form-section">
+
+<h1>COURT CASE RECORD MANAGEMENT SYSTEM</h1>
+
+<div class="grid">
+
+<div>
+<label>Court Name</label>
+<input type="text" id="court">
+</div>
+
+<div>
+<label>Judge Name</label>
+<input type="text" id="judge">
+</div>
+
+<div>
+<label>Case Name</label>
+<input type="text" id="caseName">
+</div>
+
+<div>
+<label>Case Number</label>
+<input type="text" id="casenumber">
+</div>
+
+<div>
+<label>Citation Number</label>
+<input type="text" id="citation">
+</div>
+
+<div>
+<label>Appellant Name</label>
+<input type="text" id="appellant">
+</div>
+
+<div>
+<label>Advocate for Appellant</label>
+<input type="text" id="appAdv">
+</div>
+
+<div>
+<label>Respondent Name</label>
+<input type="text" id="respondent">
+</div>
+
+<div>
+<label>Advocate for Respondent</label>
+<input type="text" id="resAdv">
+</div>
+
+<div>
+<label>FIR Number</label>
+<input type="text" id="firNo">
+</div>
+
+<div>
+<label>Police Station</label>
+<input type="text" id="ps">
+</div>
+
+<div>
+<label>FIR Date</label>
+<input type="date" id="firDate">
+</div>
+
+<div>
+<label>Judgment Date</label>
+<input type="date" id="judgmentDate">
+</div>
+
+<div>
+<label>Case Type</label>
+<input type="text" id="caseType">
+</div>
+
+<div>
+<label>Litigation Type</label>
+<input type="text" id="litigationType">
+</div>
+
+<div>
+<label>Sections / Acts Applied</label>
+<input type="text" id="sections">
+</div>
+
+<div>
+<label>Case Status</label>
+<select id="status">
+<option>Pending</option>
+<option>Decided</option>
+<option>Disposed</option>
+</select>
+</div>
+
+<div>
+<label>Court Logo / Seal</label>
+<input type="file" id="logoUpload" accept="image/*">
+</div>
+
+<div>
+<label>Judge PassPort Size Photo</label>
+<input type="file" id="photoUpload" accept="image/*">
+</div>
+
+<div>
+<label>Digital Signature</label>
+<input type="file" id="signatureUpload" accept="image/*">
+</div>
+
+</div>
+
+<button class="generate" onclick="generateRecord()">Generate Record</button>
+<button class="print" onclick="window.print()">Print Record</button>
+
+</div>
+
+<div class="a4-page">
+
+<div class="watermark">सत्यमेव जयते</div>
+
+<div class="content">
+
+<div class="header">
+
+<img id="logoPreview" class="logo">
+
+<div class="center">
+<h2>IN THE COURT OF JUSTICE</h2>
+<h3 id="oCourt">COURT NAME</h3>
+</div>
+
+<img id="photoPreview" class="passport">
+
+</div>
+
+<div class="top-details">
+
+<div>
+<p><b>Case ID:</b> <span id="caseId"></span></p>
+<p><b>Date & Time:</b> <span id="dateTime"></span></p>
+<p><b>Judge:</b> <span id="oJudge"></span></p>
+</div>
+
+<div>
+<p><b>Status:</b> <span id="oStatus"></span></p>
+<p><b>Sections:</b> <span id="oSections"></span></p>
+</div>
+
+</div>
+
+<table>
+<tr>
+<td><b>Appellant</b></td>
+<td id="oAppellant"></td>
+</tr>
+
+<tr>
+<td><b>Advocate</b></td>
+<td id="oAppAdv"></td>
+</tr>
+
+<tr>
+<td><b>Respondent</b></td>
+<td id="oRespondent"></td>
+</tr>
+
+<tr>
+<td><b>Advocate</b></td>
+<td id="oResAdv"></td>
+</tr>
+
+<tr>
+<td><b>FIR Number</b></td>
+<td id="oFir"></td>
+</tr>
+
+<tr>
+<td><b>Police Station</b></td>
+<td id="oPs"></td>
+</tr>
+
+<tr>
+<td><b>FIR Date</b></td>
+<td id="oFirDate"></td>
+</tr>
+</table>
+
+<div class="summary" id="summary"></div>
+
+<div class="qr-bar">
+
+<div>
+<h3>Case Verification QR</h3>
+<div id="qrcode"></div>
+</div>
+
+<div>
+<h3>Barcode</h3>
+<svg id="barcode"></svg>
+</div>
+
+</div>
+
+<div class="footer">
+
+<div>
+<img id="signaturePreview" class="signature">
+<p>Authorized Signature</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function previewImage(input,target){
+
+const file=input.files[0];
+
+if(file){
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+document.getElementById(target).src=e.target.result;
+}
+
+reader.readAsDataURL(file);
+
+}
+}
+
+document.getElementById('logoUpload').addEventListener('change',function(){
+previewImage(this,'logoPreview');
+});
+
+document.getElementById('photoUpload').addEventListener('change',function(){
+previewImage(this,'photoPreview');
+});
+
+document.getElementById('signatureUpload').addEventListener('change',function(){
+previewImage(this,'signaturePreview');
+});
+
+function generateRecord(){
+
+let caseID='CASE-'+Date.now();
+
+document.getElementById('caseId').innerText=caseID;
+
+document.getElementById('dateTime').innerText=
+new Date().toLocaleString();
+
+let court=document.getElementById('court').value;
+let judge=document.getElementById('judge').value;
+let caseName=document.getElementById('caseName').value;
+let casenumber=document.getElementById('casenumber').value;
+let citation=document.getElementById('citation').value;
+let appellant=document.getElementById('appellant').value;
+let appAdv=document.getElementById('appAdv').value;
+let respondent=document.getElementById('respondent').value;
+let resAdv=document.getElementById('resAdv').value;
+let firNo=document.getElementById('firNo').value;
+let ps=document.getElementById('ps').value;
+let firDate=document.getElementById('firDate').value;
+let judgmentDate=document.getElementById('judgmentDate').value;
+let caseType=document.getElementById('caseType').value;
+let litigationType=document.getElementById('litigationType').value;
+let sections=document.getElementById('sections').value;
+let status=document.getElementById('status').value;
+
+document.getElementById('oCourt').innerText=court;
+document.getElementById('oJudge').innerText=judge;
+document.getElementById('oStatus').innerText=status;
+document.getElementById('oSections').innerText=sections;
+document.getElementById('oAppellant').innerText=appellant;
+document.getElementById('oAppAdv').innerText=appAdv;
+document.getElementById('oRespondent').innerText=respondent;
+document.getElementById('oResAdv').innerText=resAdv;
+document.getElementById('oFir').innerText=firNo;
+document.getElementById('oPs').innerText=ps;
+document.getElementById('oFirDate').innerText=firDate;
+
+document.getElementById('summary').innerHTML=
+`
+<h3 style="text-align:center;margin-bottom:15px;">CREDENTIAL</h3>
+
+<p>The case titled <b>${caseName}</b>, reported as <b>${citation}</b>,
+was instituted by <b>${appellant}</b>, who was represented by
+<b>${appAdv}</b>, against <b>${respondent}</b>,
+represented through <b>${resAdv}</b>.
+The matter was adjudicated and decided on 
+<b>${judgmentDate}</b> after careful consideration of 
+the facts, submissions, pleadings, documentary evidence, 
+and applicable provisions of law presented before the competent court.</p>
+
+<p>The proceedings were registered as <b>${caseType}</b> <b>${casenumber}</b> [Case Type and Case Number] 
+and fall under the category of <b>${litigationType}</b>. 
+The case involved the interpretation and application of the provisions 
+contained in <b>${sections}</b>, which governed the legal issues 
+arising for determination in the matter. Throughout the course of the proceedings, 
+both parties were afforded an adequate opportunity to present their respective claims, 
+defenses, arguments, and supporting materials before the court.</p>
+
+<p>The record reflects the complete particulars of the dispute, 
+including the identities of the parties, legal representatives, 
+procedural history, statutory framework involved, and the judicial findings rendered in the case. 
+The matter forms part of the official judicial record and has been documented for legal, administrative, 
+and reference purposes. As per the latest available information, the 
+present status of the case is <b>${status}</b>, indicating that further proceedings, compliance, execution, review, appeal, or related judicial action may still be awaited or remain under consideration before the appropriate forum.</p>
+
+<p>This case record has been digitally generated, authenticated, 
+and securely maintained within the Court Case Record Management System. 
+For purposes of verification, identification, and future reference, the record 
+has been assigned the unique Case ID: <b>${caseID}</b>. The said Case ID serves as a digital 
+verification reference and may be used to access, validate, or retrieve the corresponding 
+case details from the authorized database or record management system. All information 
+contained herein is intended for official record-keeping and verification purposes and 
+is subject to the orders, updates, and directions issued by the competent judicial authority from time to time.</p>
+`;
+
+document.getElementById('qrcode').innerHTML='';
+
+new QRCode(document.getElementById('qrcode'),{
+text:caseID,
+width:140,
+height:140
+});
+
+JsBarcode("#barcode",caseID,{
+format:"CODE128",
+displayValue:true
+});
+
+}
+</script>
+
+</body>
+</html>
